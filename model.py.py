@@ -15,7 +15,7 @@
 # 10. Training the linear regression model
 # 11. Conclusion
 
-# In[250]:
+# In[1]:
 
 
 #Importing require libraries
@@ -30,73 +30,81 @@ import warnings
 warnings.simplefilter("ignore")
 
 
-# In[251]:
+# In[2]:
 
 
 df = pd.read_csv('transfusion.data')
 
 
-# In[252]:
+# In[3]:
 
 
-df.head()
+df.head(10)
 
 
-# In[253]:
+# In[5]:
 
 
 df.describe()
 
 
-# In[254]:
+# In[6]:
 
 
 df.shape
 
 
-# In[255]:
+# In[7]:
 
 
-X = df.drop(columns=['whether he/she donated blood in March 2007'])
+df.rename(columns={'whether he/she donated blood in March 2007':'Target'}, inplace=True)
 
 
-# In[256]:
+# In[8]:
+
+
+X = df.drop(columns=['Target'])
+
+
+# In[9]:
 
 
 X.shape
 
 
-# In[257]:
+# In[10]:
 
 
-y = df['whether he/she donated blood in March 2007']
+y = df['Target']
 y.head()
 
+y.value_counts(normalize=True).round(3)
 
-# In[265]:
+
+# In[13]:
 
 
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.229,stratify=y, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)
 
 
-# In[266]:
+# In[14]:
 
 
 X_train.shape
 
 
-# In[267]:
+# In[15]:
 
 
 X_train.info()
 
 
-# In[286]:
+# In[29]:
 
 
 tpot = TPOTClassifier(
-    generations=5,
+    generations=10,
     population_size=20,
     verbosity=2,
     scoring='roc_auc',
@@ -107,14 +115,14 @@ tpot = TPOTClassifier(
 tpot.fit(X_train, y_train)
 
 
-# In[287]:
+# In[30]:
 
 
 tpot_auc_score = roc_auc_score(y_test, tpot.predict_proba(X_test)[:, 1])
 print(f'\nAUC score: {tpot_auc_score:.4f}')
 
 
-# In[288]:
+# In[31]:
 
 
 print('\nBest pipeline steps:', end='\n')
@@ -123,13 +131,13 @@ for idx, (name, transform) in enumerate(tpot.fitted_pipeline_.steps, start=1):
     print(f'{idx}. {transform}')
 
 
-# In[223]:
+# In[32]:
 
 
 tpot.fitted_pipeline_
 
 
-# In[292]:
+# In[33]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -138,34 +146,34 @@ logreg = LogisticRegression(C=25.0, random_state=42)
 logreg.fit(X_train,y_train)
 
 
-# In[294]:
+# In[34]:
 
 
 #Predicting on the test data
 pred=logreg.predict(X_test)
 
 
-# In[296]:
+# In[35]:
 
 
 confusion_matrix(pred,y_test)
 
 
-# In[299]:
+# In[36]:
 
 
 logreg_auc_score = roc_auc_score(y_test, logreg.predict_proba(X_test)[:, 1])
 print(f'\nAUC score: {logreg_auc_score:.4f}')
 
 
-# In[300]:
+# In[37]:
 
 
 import pickle
 pickle.dump(logreg, open('model.pkl','wb'))
 
 
-# In[301]:
+# In[38]:
 
 
 model=pickle.load(open('model.pkl','rb'))
