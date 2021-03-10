@@ -169,14 +169,14 @@ print(f'\nAUC score: {logreg_auc_score:.4f}')
 # In[37]:
 
 
-#import pickle
-#pickle.dump(logreg, open('model.pkl','wb'))
+import pickle
+pickle.dump(logreg, open('model.pkl','wb'))
 
 
 # In[38]:
 
 
-#model=pickle.load(open('model.pkl','rb'))
+model=pickle.load(open('model.pkl','rb'))
 
 
 # In[ ]:
