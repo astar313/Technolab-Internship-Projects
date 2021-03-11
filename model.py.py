@@ -15,7 +15,7 @@
 # 10. Training the linear regression model
 # 11. Conclusion
 
-# In[1]:
+# In[5]:
 
 
 #Importing require libraries
@@ -30,49 +30,49 @@ import warnings
 warnings.simplefilter("ignore")
 
 
-# In[2]:
+# In[6]:
 
 
 df = pd.read_csv('transfusion.data')
 
 
-# In[3]:
+# In[7]:
 
 
 df.head(10)
 
 
-# In[5]:
+# In[8]:
 
 
 df.describe()
 
 
-# In[6]:
+# In[9]:
 
 
 df.shape
 
 
-# In[7]:
+# In[10]:
 
 
 df.rename(columns={'whether he/she donated blood in March 2007':'Target'}, inplace=True)
 
 
-# In[8]:
+# In[11]:
 
 
 X = df.drop(columns=['Target'])
 
 
-# In[9]:
+# In[12]:
 
 
 X.shape
 
 
-# In[10]:
+# In[13]:
 
 
 y = df['Target']
@@ -81,26 +81,26 @@ y.head()
 y.value_counts(normalize=True).round(3)
 
 
-# In[13]:
+# In[14]:
 
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)
 
 
-# In[14]:
+# In[15]:
 
 
 X_train.shape
 
 
-# In[15]:
+# In[16]:
 
 
 X_train.info()
 
 
-# In[29]:
+# In[17]:
 
 
 tpot = TPOTClassifier(
@@ -115,14 +115,14 @@ tpot = TPOTClassifier(
 tpot.fit(X_train, y_train)
 
 
-# In[30]:
+# In[18]:
 
 
 tpot_auc_score = roc_auc_score(y_test, tpot.predict_proba(X_test)[:, 1])
 print(f'\nAUC score: {tpot_auc_score:.4f}')
 
 
-# In[31]:
+# In[19]:
 
 
 print('\nBest pipeline steps:', end='\n')
@@ -131,13 +131,13 @@ for idx, (name, transform) in enumerate(tpot.fitted_pipeline_.steps, start=1):
     print(f'{idx}. {transform}')
 
 
-# In[32]:
+# In[20]:
 
 
 tpot.fitted_pipeline_
 
 
-# In[33]:
+# In[21]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -146,37 +146,37 @@ logreg = LogisticRegression(C=25.0, random_state=42)
 logreg.fit(X_train,y_train)
 
 
-# In[34]:
+# In[22]:
 
 
 #Predicting on the test data
 pred=logreg.predict(X_test)
 
 
-# In[35]:
+# In[23]:
 
 
 confusion_matrix(pred,y_test)
 
 
-# In[36]:
+# In[24]:
 
 
 logreg_auc_score = roc_auc_score(y_test, logreg.predict_proba(X_test)[:, 1])
 print(f'\nAUC score: {logreg_auc_score:.4f}')
 
 
-# In[37]:
+# In[25]:
 
 
 import pickle
-pickle.dump(logreg, open('model.pkl','wb'))
+pickle.dump(logreg, open('model2.pkl','wb'))
 
 
-# In[38]:
+# In[26]:
 
 
-model=pickle.load(open('model.pkl','rb'))
+model=pickle.load(open('model2.pkl','rb'))
 
 
 # In[ ]:
